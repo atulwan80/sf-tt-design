@@ -3,11 +3,17 @@ package monad;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 // interface java.util.function.Predicate<E>
 //interface StudentCriterion {
 //  boolean test(Student s);
+//}
+
+// interface java.util.function.Function<E, F>
+//interface Operation<E, F> {
+//  F apply(E e);
 //}
 
 //class SmartCriterion implements StudentCriterion {
@@ -61,7 +67,7 @@ public class School {
 //  }
 
   public static <E> List<E> filter(
-      List<E> ls, Predicate<E> interesting) {
+      Iterable<E> ls, Predicate<E> interesting) {
 //      List<Student> ls, StudentCriterion interesting) {
 
     List<E> res = new ArrayList<>();
@@ -70,6 +76,16 @@ public class School {
       if (interesting.test(s)) {
         res.add(s);
       }
+    }
+    return res;
+  }
+
+//  public static <E, F> List<F> change(List<E> l, Operation<E, F> op) {
+  public static <E, F> List<F> map(Iterable<E> l, Function<E, F> op) {
+    List<F> res = new ArrayList<>();
+
+    for (E s : l) {
+      res.add(op.apply(s));
     }
     return res;
   }
@@ -89,7 +105,18 @@ public class School {
     showAll(filter(ls, new EnthusiasticCriterion()));
     showAll(filter(ls, (Student s) -> {return s.getGpa() < 3.5;}));
 
-    showAll(filter(Arrays.asList("here", "are", "Some", "various", "words"),
-        (String s) -> s.length() > 4));
+    List<String> words = Arrays.asList("here", "are", "Some", "various", "words");
+    showAll(filter(words, (String s) -> s.length() > 4));
+
+    showAll(map(words, s -> s.toUpperCase()));
+    showAll(map(words, s -> s.length()));
+
+    SuperIterable<String> names = new SuperIterable<>(
+        Arrays.asList("Fred", "Jim", "Sheila")
+    );
+
+    for (String n : names) {
+      System.out.println("> " + n);
+    }
   }
 }
